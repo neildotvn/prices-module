@@ -1301,24 +1301,31 @@ const instance = axios.create({
 const getData = () =>
     new Promise((resolve, reject) => {
 
+
+
         redis.get("tincaphe-token").then(result => {
             console.log("token = " + result);
-            axios.post({
-                url: "/",
-                method: 'post',
-                baseURL: 'http://tincaphe.com/api/services/app/priceTableClient/GetValues',
-                headers: {'Authorization': result}
-            }).then(response => {
+
+            const instance = axios.create({
+                baseURL: "http://tincaphe.com/api/services/app/priceTableClient/GetValues",
+                timeout: 2000,
+                headers: {
+                    authorization:
+                    result,
+                    "user-agent":
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36"
+                }
+            });
+
+            instance.post("/").then(response => {
                 console.log("prices = " + response);
                 resolve(response.data)
             })
-                .catch(err => reject(err))
+                .catch(err => {
+                    console.log(err);
+                    reject(err)
+                });
         });
-
-        instance
-            .post("/")
-            .then(response => resolve(response.data))
-            .catch(err => reject(err));
     });
 
 setInterval(() => {
