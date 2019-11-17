@@ -1300,6 +1300,21 @@ const instance = axios.create({
 
 const getData = () =>
     new Promise((resolve, reject) => {
+
+        redis.get("tincaphe-token").then(result => {
+            console.log("token = " + result);
+            axios.post({
+                url: "/",
+                method: 'post',
+                baseURL: 'http://tincaphe.com/api/services/app/priceTableClient/GetValues',
+                headers: {'Authorization': result}
+            }).then(response => {
+                console.log("prices = " + response);
+                resolve(response.data)
+            })
+                .catch(err => reject(err))
+        });
+
         instance
             .post("/")
             .then(response => resolve(response.data))
