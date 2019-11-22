@@ -1319,7 +1319,7 @@ const getData = () =>
             });
 
             instance.post("/").then(response => {
-                console.log(response);
+                console.log("Thanh cong roi, oh yeah", response);
                 resolve(response.data)
             })
                 .catch(err => {
@@ -1334,5 +1334,5 @@ setInterval(() => {
         .then(data => {
             setData(processRemoteData(data, commodityMap), readInvestingData());
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log("Loi cmnr", err));
 }, 2000);
