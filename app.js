@@ -1268,6 +1268,7 @@ const processRemoteData = (object, commodityMap) => {
 };
 
 const readInvestingData = () => {
+    return {}
     return JSON.parse(
         fs.readFileSync(
             "/home/neil/PycharmProjects/investing-crawler/investing.json"
@@ -1318,7 +1319,7 @@ const getData = () =>
             });
 
             instance.post("/").then(response => {
-                console.log("prices = " + response);
+                console.log(response);
                 resolve(response.data)
             })
                 .catch(err => {
