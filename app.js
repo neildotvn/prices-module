@@ -1193,11 +1193,11 @@ const priceObj = JSON.parse(JSON.stringify(prices));
 const commodityMap = {
     arabica: {
         nyb: [3, 4, 5, 6],
-        nybTerms: ["11/19", "12/19", "01/20", "02/20"]
+        nybTerms: ["12/19", "03/20", "05/20", "07/20"]
     },
     robusta: {
         ice: [15, 16, 17, 18],
-        iceTerms: ["11/19", "01/20", "03/20", "05/20"]
+        iceTerms: ["01/20", "03/20", "05/20", "07/20"]
     },
     cotton: {
         nyb: [9, 10, 11, 12],
@@ -1268,10 +1268,9 @@ const processRemoteData = (object, commodityMap) => {
 };
 
 const readInvestingData = () => {
-    return {}
     return JSON.parse(
         fs.readFileSync(
-            "/home/neil/PycharmProjects/investing-crawler/investing.json"
+            "/Users/neilann/dev/projects/investing-crawler/investing.json"
         )
     );
 };
@@ -1288,21 +1287,8 @@ const setData = (tincapheData, investingData) => {
         .catch(err => console.log(err));
 };
 
-const instance = axios.create({
-    baseURL: "http://tincaphe.com/api/services/app/priceTableClient/GetValues",
-    timeout: 1000,
-    headers: {
-        authorization:
-            "Bearer rohs4LC6hJfqDP1xCvbkglaR3EJDiZo3ntp0Ubq8jYwJ5YT0YMTQyOjkRHbErYKKwpfoOhDkRFXpABi0DhN-aPPFuwnlz1xvbRlDFBMb71tcLIWLUmLRcVZzN1d1boPkE5ReTkqQVhaNwKHjUVgfpfajJqbVOPqTWz8lDgntVej2Wm9GCp5RlQ5VW5jtS4nNH32aPLFr2fqJL--VwcEk98_ds23oApuIPZiDKKnVLifnWlqBmKxB-pqut3jmK1qPpzWEru5kwkr-orHUDSVIKydUIqXPNv3XbeWeBjcFLhH_xouwp-QmPemfRCJ0k3iA7_VLhQvBmhW4aOMn4dnd3wSk9cFnZFHCHy3GNQFmBv8lVjtfXZfmv8RR0eHS_86x0RyV9r5i5OdEIag70nikGubIDvA-JyhXeMrFXvhiOeszlapizWzzgVROKvE0S3kTWV1P_84TsAEE8_V1mabfKEQpmSXGdcXC9bBs1yYB8yVJopp1PM9f-nDHAEmyR028sUS0fgWSkB8HS2N8BYTvWyxYTdIJR1XUa6-1GR379FxWx2BhP0CS2OaTz5djsT7dvcGvU_on4eCjnUFgEV3X5TlmmBBpEpvODv-k29nDle4000RlVjWGsPRfSWY_iaIyQ4UB2oG792aNr0FcsbyEpw",
-        "user-agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36"
-    }
-});
-
 const getData = () =>
     new Promise((resolve, reject) => {
-
-
 
         redis.get("tincaphe-token").then(result => {
             console.log("token = " + result);
