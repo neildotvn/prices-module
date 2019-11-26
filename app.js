@@ -1289,28 +1289,29 @@ const setData = (tincapheData, investingData) => {
 
 const getData = () =>
     new Promise((resolve, reject) => {
-
         redis.get("tincaphe-token").then(result => {
             console.log("token = " + result);
 
             const instance = axios.create({
-                baseURL: "http://tincaphe.com/api/services/app/priceTableClient/GetValues",
+                baseURL:
+                    "http://tincaphe.com/api/services/app/priceTableClient/GetValues",
                 timeout: 2000,
                 headers: {
-                    authorization:
-                    result,
+                    authorization: result,
                     "user-agent":
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36"
                 }
             });
 
-            instance.post("/").then(response => {
-                console.log("Thanh cong roi, oh yeah", response);
-                resolve(response.data)
-            })
+            instance
+                .post("/")
+                .then(response => {
+                    console.log("Thanh cong roi, oh yeah", response);
+                    resolve(response.data);
+                })
                 .catch(err => {
                     console.log(err);
-                    reject(err)
+                    reject(err);
                 });
         });
     });
