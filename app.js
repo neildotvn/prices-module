@@ -1321,5 +1321,8 @@ setInterval(() => {
         .then(data => {
             setData(processRemoteData(data, commodityMap), readInvestingData());
         })
-        .catch(err => console.log("Loi cmnr", err));
+        .catch(err => {
+            console.log("Loi tincaphe cmnr", err);
+            setData({}, readInvestingData());
+        });
 }, 2000);
