@@ -4,6 +4,7 @@ const pub = new Redis();
 const _ = require("lodash");
 const fs = require("fs");
 const axios = require("axios");
+const { countOrder } = require("./order_count");
 
 const prices = {
     result: [
@@ -1220,51 +1221,90 @@ const commodityMap = {
 
 const processRemoteData = (object, commodityMap) => {
     // magic numbers: 1,2,6,7,11,13 - map data from tincaphe.com
-    const magicNumbers = [1, 2, 6, 7, 11, 13];
-    const processedData = {};
-    for (key of Object.keys(commodityMap)) {
-        processedData[key] = {};
-        const com = commodityMap[key];
-        const ice = com.ice;
-        const nyb = com.nyb;
-        if (ice) {
-            const arr = [];
-            for (let i = 0; i < ice.length; i++) {
+    return new Promise((resolve, reject) => {
+        redis
+            .get("orders-count")
+            .then(orderCount => {
+                console.log(orderCount);
+                orderCount = JSON.parse(orderCount);
+
                 try {
-                    const rowIndex = ice[i];
-                    const rawData = object.result[rowIndex].vs;
-                    const rowData = rawData.filter((data, index) =>
-                        magicNumbers.includes(index)
-                    );
-                    rowData.push(rawData[5] === "+");
-                    rowData.unshift(com.iceTerms[i]);
-                    arr.push(rowData);
+                    const magicNumbers = [1, 2, 6, 7, 11, 13];
+                    const processedData = {};
+                    for (key of Object.keys(commodityMap)) {
+                        processedData[key] = {};
+                        const com = commodityMap[key];
+                        const ice = com.ice;
+                        const nyb = com.nyb;
+                        if (ice) {
+                            const arr = [];
+                            for (let i = 0; i < ice.length; i++) {
+                                try {
+                                    const rowIndex = ice[i];
+                                    const rawData = object.result[rowIndex].vs;
+                                    const rowData = rawData.filter(
+                                        (data, index) =>
+                                            magicNumbers.includes(index)
+                                    );
+                                    rowData.push(rawData[5] === "+");
+                                    rowData.unshift(com.iceTerms[i]);
+                                    if (
+                                        orderCount[key] &&
+                                        orderCount[key].ice[rowData[0]]
+                                    ) {
+                                        rowData.push(
+                                            orderCount[key].ice[rowData[0]].buy
+                                        );
+                                        rowData.push(
+                                            orderCount[key].ice[rowData[0]].sell
+                                        );
+                                    }
+                                    ice;
+                                    arr.push(rowData);
+                                } catch (err) {
+                                    console.log(err);
+                                }
+                            }
+                            processedData[key].ice = arr;
+                        }
+                        if (nyb) {
+                            const arr = [];
+                            for (let i = 0; i < nyb.length; i++) {
+                                try {
+                                    const rowIndex = nyb[i];
+                                    const rawData = object.result[rowIndex].vs;
+                                    const rowData = rawData.filter(
+                                        (data, index) =>
+                                            magicNumbers.includes(index)
+                                    );
+                                    rowData.push(rawData[5] === "+");
+                                    rowData.unshift(com.nybTerms[i]);
+                                    if (
+                                        orderCount[key] &&
+                                        orderCount[key].nyb[rowData[0]]
+                                    ) {
+                                        rowData.push(
+                                            orderCount[key].nyb[rowData[0]].buy
+                                        );
+                                        rowData.push(
+                                            orderCount[key].nyb[rowData[0]].sell
+                                        );
+                                    }
+                                    arr.push(rowData);
+                                } catch (err) {
+                                    console.log(err);
+                                }
+                            }
+                            processedData[key].nyb = arr;
+                        }
+                    }
+                    resolve(processedData);
                 } catch (err) {
-                    console.log(err);
+                    reject(err);
                 }
-            }
-            processedData[key].ice = arr;
-        }
-        if (nyb) {
-            const arr = [];
-            for (let i = 0; i < nyb.length; i++) {
-                try {
-                    const rowIndex = nyb[i];
-                    const rawData = object.result[rowIndex].vs;
-                    const rowData = rawData.filter((data, index) =>
-                        magicNumbers.includes(index)
-                    );
-                    rowData.push(rawData[5] === "+");
-                    rowData.unshift(com.nybTerms[i]);
-                    arr.push(rowData);
-                } catch (err) {
-                    console.log(err);
-                }
-            }
-            processedData[key].nyb = arr;
-        }
-    }
-    return processedData;
+            })
+            .catch(err => reject(err));
+    });
 };
 
 const readInvestingData = () => {
@@ -1290,7 +1330,7 @@ const setData = (tincapheData, investingData) => {
 const getData = () =>
     new Promise((resolve, reject) => {
         redis.get("tincaphe-token").then(result => {
-            console.log("token = " + result);
+            // console.log("token = " + result);
 
             const instance = axios.create({
                 baseURL:
@@ -1306,7 +1346,7 @@ const getData = () =>
             instance
                 .post("/")
                 .then(response => {
-                    console.log("Thanh cong roi, oh yeah", response);
+                    console.log("Thanh cong roi, oh yeah"); //, response);
                     resolve(response.data);
                 })
                 .catch(err => {
@@ -1319,10 +1359,14 @@ const getData = () =>
 setInterval(() => {
     getData()
         .then(data => {
-            setData(processRemoteData(data, commodityMap), readInvestingData());
+            processRemoteData(data, commodityMap).then(processedData => {
+                setData(processedData, readInvestingData());
+            });
         })
         .catch(err => {
             console.log("Loi tincaphe cmnr", err);
             setData({}, readInvestingData());
         });
 }, 2000);
+
+countOrder();
