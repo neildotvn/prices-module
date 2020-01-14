@@ -1238,7 +1238,7 @@ const processRemoteData = (object, commodityMap) => {
                 orderCount = JSON.parse(orderCount);
 
                 try {
-                    const magicNumbers = [1, 2, 6, 7, 11, 13, 16];
+                    const magicNumbers = [1, 2, 6, 7, 11, 13];
                     const processedData = {};
                     for (key of Object.keys(commodityMap)) {
                         processedData[key] = {};
@@ -1255,9 +1255,7 @@ const processRemoteData = (object, commodityMap) => {
                                         (data, index) =>
                                             magicNumbers.includes(index)
                                     );
-                                    rowData[rowData.length - 1] = getTerm(
-                                        rowData[rowData.length - 1]
-                                    );
+                                    rowData.unshift(getTerm(rawData[16]));
                                     rowData.push(rawData[5] === "+");
                                     // rowData.unshift(com.iceTerms[i]);
                                     if (
@@ -1289,9 +1287,7 @@ const processRemoteData = (object, commodityMap) => {
                                         (data, index) =>
                                             magicNumbers.includes(index)
                                     );
-                                    rowData[rowData.length - 1] = getTerm(
-                                        rowData[rowData.length - 1]
-                                    );
+                                    rowData.unshift(getTerm(rawData[16]));
                                     rowData.push(rawData[5] === "+");
                                     // rowData.unshift(com.nybTerms[i]);
                                     if (
@@ -1331,9 +1327,9 @@ const getTerm = fullTerm => {
 const readInvestingData = () => {
     return JSON.parse(
         fs.readFileSync(
-            isLocal 
-            ? "/Users/neilann/dev/projects/investing-crawler/investing.json"
-            : "/home/neil/dev/investing-crawler/investing.json"
+            isLocal
+                ? "/Users/neilann/dev/projects/investing-crawler/investing.json"
+                : "/home/neil/dev/investing-crawler/investing.json"
         )
     );
 };
