@@ -1202,12 +1202,12 @@ try {
 
 const commodityMap = {
     arabica: {
-        nyb: [3, 4, 5, 6],
-        nybTerms: ["12/19", "03/20", "05/20", "07/20"]
+        nyb: [3, 4, 5, 6, 7, 8],
+        nybTerms: ["03/20", "05/20", "07/20", "09/20", "12/20", "03/21"]
     },
     robusta: {
-        ice: [15, 16, 17, 18],
-        iceTerms: ["01/20", "03/20", "05/20", "07/20"]
+        ice: [15, 16, 17, 18, 19, 20],
+        iceTerms: ["03/20", "05/20", "07/20", "09/20", "11/20", "01/21"]
     },
     cotton: {
         nyb: [9, 10, 11, 12],
@@ -1255,9 +1255,9 @@ const processRemoteData = (object, commodityMap) => {
                                         (data, index) =>
                                             magicNumbers.includes(index)
                                     );
-                                    rowData.unshift(getTerm(rawData[16]));
+                                    // rowData.unshift(getTerm(rawData[16]));
                                     rowData.push(rawData[5] === "+");
-                                    // rowData.unshift(com.iceTerms[i]);
+                                    rowData.unshift(com.iceTerms[i]);
                                     if (
                                         orderCount[key] &&
                                         orderCount[key].ice[rowData[0]]
@@ -1287,9 +1287,9 @@ const processRemoteData = (object, commodityMap) => {
                                         (data, index) =>
                                             magicNumbers.includes(index)
                                     );
-                                    rowData.unshift(getTerm(rawData[16]));
+                                    // rowData.unshift(getTerm(rawData[16]));
                                     rowData.push(rawData[5] === "+");
-                                    // rowData.unshift(com.nybTerms[i]);
+                                    rowData.unshift(com.nybTerms[i]);
                                     if (
                                         orderCount[key] &&
                                         orderCount[key].nyb[rowData[0]]
