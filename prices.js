@@ -1191,6 +1191,15 @@ const prices = {
 
 const priceObj = JSON.parse(JSON.stringify(prices));
 
+let isLocal = false;
+try {
+    if (fs.existsSync("./local.js")) {
+        isLocal = true;
+    }
+} catch (e) {
+    console.log("Development environment", e);
+}
+
 const commodityMap = {
     arabica: {
         nyb: [3, 4, 5, 6],
@@ -1229,7 +1238,7 @@ const processRemoteData = (object, commodityMap) => {
                 orderCount = JSON.parse(orderCount);
 
                 try {
-                    const magicNumbers = [1, 2, 6, 7, 11, 13];
+                    const magicNumbers = [1, 2, 6, 7, 11, 13, 16];
                     const processedData = {};
                     for (key of Object.keys(commodityMap)) {
                         processedData[key] = {};
@@ -1246,8 +1255,11 @@ const processRemoteData = (object, commodityMap) => {
                                         (data, index) =>
                                             magicNumbers.includes(index)
                                     );
+                                    rowData[rowData.length - 1] = getTerm(
+                                        rowData[rowData.length - 1]
+                                    );
                                     rowData.push(rawData[5] === "+");
-                                    rowData.unshift(com.iceTerms[i]);
+                                    // rowData.unshift(com.iceTerms[i]);
                                     if (
                                         orderCount[key] &&
                                         orderCount[key].ice[rowData[0]]
@@ -1277,8 +1289,11 @@ const processRemoteData = (object, commodityMap) => {
                                         (data, index) =>
                                             magicNumbers.includes(index)
                                     );
+                                    rowData[rowData.length - 1] = getTerm(
+                                        rowData[rowData.length - 1]
+                                    );
                                     rowData.push(rawData[5] === "+");
-                                    rowData.unshift(com.nybTerms[i]);
+                                    // rowData.unshift(com.nybTerms[i]);
                                     if (
                                         orderCount[key] &&
                                         orderCount[key].nyb[rowData[0]]
@@ -1307,10 +1322,18 @@ const processRemoteData = (object, commodityMap) => {
     });
 };
 
+const getTerm = fullTerm => {
+    return `${fullTerm.substring(0, 2)}/${fullTerm.substring(
+        fullTerm.length - 2
+    )}`;
+};
+
 const readInvestingData = () => {
     return JSON.parse(
         fs.readFileSync(
-            "/Users/neilann/dev/projects/investing-crawler/investing.json"
+            isLocal 
+            ? "/Users/neilann/dev/projects/investing-crawler/investing.json"
+            : "/home/neil/dev/investing-crawler/investing.json"
         )
     );
 };
