@@ -1210,20 +1210,20 @@ const commodityMap = {
         iceTerms: ["03/20", "05/20", "07/20", "09/20", "11/20", "01/21"]
     },
     cotton: {
-        nyb: [9, 10, 11, 12],
-        nybTerms: ["12/19", "03/20", "05/20", "07/20"],
+        nyb: [9, 10, 11, 12, 13, 14],
+        nybTerms: ["03/20", "05/20", "07/20", "10/20", "12/20", "03/21"],
         code: 9
     },
     cocoa: {
         ice: [34, 35],
         nyb: [36, 37],
-        iceTerms: ["12/19", "03/20"],
-        nybTerms: ["12/19", "03/20"],
+        iceTerms: ["03/20", "05/20"],
+        nybTerms: ["03/20", "05/20"],
         code: 11
     },
     rubber: {
         nyb: [42, 43, 44, 45],
-        nybTerms: ["11/19", "12/19", "01/20", "02/20"],
+        nybTerms: ["03/20", "04/20", "05/20", "06/20"],
         code: 10
     }
 };
@@ -1256,7 +1256,7 @@ const processRemoteData = (object, commodityMap) => {
                                             magicNumbers.includes(index)
                                     );
                                     // rowData.unshift(getTerm(rawData[16]));
-                                    rowData.push(rawData[2][0] !== "-");
+                                    rowData.push(rawData[2][0] !== "-" || rawData[2] < 0);
                                     // rowData.push(rawData[1] >= rawData[0]);
                                     rowData.unshift(com.iceTerms[i]);
                                     if (
@@ -1289,7 +1289,7 @@ const processRemoteData = (object, commodityMap) => {
                                             magicNumbers.includes(index)
                                     );
                                     // rowData.unshift(getTerm(rawData[16]));
-                                    rowData.push(rawData[2][0] !== "-");
+                                    rowData.push(rawData[2][0] !== "-" || rawData[2] < 0);
                                     // rowData.push(rawData[1] >= rawData[0]);
                                     rowData.unshift(com.nybTerms[i]);
                                     if (
