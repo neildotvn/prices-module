@@ -1256,7 +1256,7 @@ const processRemoteData = (object, commodityMap) => {
                                             magicNumbers.includes(index)
                                     );
                                     // rowData.unshift(getTerm(rawData[16]));
-                                    rowData.push(rawData[2][0] !== "-" || rawData[2] < 0);
+                                    rowData.push(!(rawData[2][0] === "-" || rawData[2] < 0));
                                     // rowData.push(rawData[1] >= rawData[0]);
                                     rowData.unshift(com.iceTerms[i]);
                                     if (
@@ -1289,7 +1289,7 @@ const processRemoteData = (object, commodityMap) => {
                                             magicNumbers.includes(index)
                                     );
                                     // rowData.unshift(getTerm(rawData[16]));
-                                    rowData.push(rawData[2][0] !== "-" || rawData[2] < 0);
+                                    rowData.push(!(rawData[2][0] === "-" || rawData[2] < 0));
                                     // rowData.push(rawData[1] >= rawData[0]);
                                     rowData.unshift(com.nybTerms[i]);
                                     if (
