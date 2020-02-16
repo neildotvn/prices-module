@@ -1256,7 +1256,12 @@ const processRemoteData = (object, commodityMap) => {
                                             magicNumbers.includes(index)
                                     );
                                     // rowData.unshift(getTerm(rawData[16]));
-                                    rowData.push(!(rawData[2][0] === "-" || rawData[2] < 0));
+                                    rowData.push(
+                                        !(
+                                            rawData[2][0] === "-" ||
+                                            rawData[2] < 0
+                                        )
+                                    );
                                     // rowData.push(rawData[1] >= rawData[0]);
                                     rowData.unshift(com.iceTerms[i]);
                                     if (
@@ -1289,7 +1294,12 @@ const processRemoteData = (object, commodityMap) => {
                                             magicNumbers.includes(index)
                                     );
                                     // rowData.unshift(getTerm(rawData[16]));
-                                    rowData.push(!(rawData[2][0] === "-" || rawData[2] < 0));
+                                    rowData.push(
+                                        !(
+                                            rawData[2][0] === "-" ||
+                                            rawData[2] < 0
+                                        )
+                                    );
                                     // rowData.push(rawData[1] >= rawData[0]);
                                     rowData.unshift(com.nybTerms[i]);
                                     if (
@@ -1354,8 +1364,7 @@ const getData = () =>
             // console.log("token = " + result);
 
             const instance = axios.create({
-                baseURL:
-                    "http://tincaphe.com/api/services/app/priceTableClient/GetValues",
+                baseURL: "http://tincaphe.com/api",
                 timeout: 2000,
                 headers: {
                     authorization: result,
@@ -1365,9 +1374,9 @@ const getData = () =>
             });
 
             instance
-                .post("/")
+                .post("/services/app/priceTableClient/GetValues")
                 .then(response => {
-                    console.log("Thanh cong roi, oh yeah"); //, response);
+                    console.log("Thanh cong roi, oh yeah", response.data); //, response);
                     resolve(response.data);
                 })
                 .catch(err => {
@@ -1387,6 +1396,25 @@ setInterval(() => {
         .catch(err => {
             console.log("Loi tincaphe cmnr", err);
             setData({}, readInvestingData());
+            axios
+                .post("http://tincaphe.com/api/account/authenticate", {
+                    grant_type: "password",
+                    client_id: "APP",
+                    usernameOrEmailAddress: "minhtram",
+                    password: "3415",
+                    tenancyName: "Default",
+                    rememberMe: false
+                })
+                .then(response => {
+                    redis.set(
+                        "tincaphe-token",
+                        `Bearer ${response.data.result.access_token}`
+                    );
+                    console.log(response);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         });
 }, 2000);
 
