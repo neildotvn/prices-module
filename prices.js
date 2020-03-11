@@ -154,13 +154,18 @@ const getTerm = fullTerm => {
 };
 
 const readInvestingData = () => {
-    return JSON.parse(
-        fs.readFileSync(
-            isLocal
-                ? "/Users/neilann/dev/projects/investing-crawler/investing.json"
-                : "/home/neil/dev/investing-crawler/investing.json"
-        )
-    );
+    try {
+        return JSON.parse(
+            fs.readFileSync(
+                isLocal
+                    ? "/Users/neilann/dev/projects/investing-crawler/investing.json"
+                    : "/home/neil/dev/investing-crawler/investing.json"
+            )
+        ); 
+    } catch (err) {
+        console.log(err)
+        return {}
+    }
 };
 
 const setData = (tincapheData, investingData) => {
