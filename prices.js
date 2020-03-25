@@ -48,14 +48,14 @@ const commodityMap = {
 const processRemoteData = (object, commodityMap) => {
     // magic numbers: 1,2,6,7,11,13 - map data from tincaphe.com
     return new Promise((resolve, reject) => {
-        redis
-            .get("orders-count")
-            .then(orderCount => {
-                console.log(orderCount);
-                orderCount = JSON.parse(orderCount);
+        // redis
+        //     .get("orders-count")
+        //     .then(orderCount => {
+        //         console.log(orderCount);
+        //         orderCount = JSON.parse(orderCount);
 
                 try {
-                    const magicNumbers = [1, 2, 6, 7, 11, 13];
+                    const magicNumbers = [1, 2, 6, 7];
                     const processedData = {};
                     for (key of Object.keys(commodityMap)) {
                         processedData[key] = {};
@@ -72,27 +72,14 @@ const processRemoteData = (object, commodityMap) => {
                                         (data, index) =>
                                             magicNumbers.includes(index)
                                     );
-                                    // rowData.unshift(getTerm(rawData[16]));
+                                    rowData.push(rawData[4])
                                     rowData.push(
                                         !(
                                             rawData[2][0] === "-" ||
                                             rawData[2] < 0
                                         )
                                     );
-                                    // rowData.push(rawData[1] >= rawData[0]);
                                     rowData.unshift(com.iceTerms[i]);
-                                    if (
-                                        orderCount[key] &&
-                                        orderCount[key].ice[rowData[0]]
-                                    ) {
-                                        rowData.push(
-                                            orderCount[key].ice[rowData[0]].buy
-                                        );
-                                        rowData.push(
-                                            orderCount[key].ice[rowData[0]].sell
-                                        );
-                                    }
-                                    ice;
                                     arr.push(rowData);
                                 } catch (err) {
                                     console.log(err);
@@ -110,26 +97,14 @@ const processRemoteData = (object, commodityMap) => {
                                         (data, index) =>
                                             magicNumbers.includes(index)
                                     );
-                                    // rowData.unshift(getTerm(rawData[16]));
+                                    rowData.push(rawData[4])
                                     rowData.push(
                                         !(
                                             rawData[2][0] === "-" ||
                                             rawData[2] < 0
                                         )
                                     );
-                                    // rowData.push(rawData[1] >= rawData[0]);
                                     rowData.unshift(com.nybTerms[i]);
-                                    if (
-                                        orderCount[key] &&
-                                        orderCount[key].nyb[rowData[0]]
-                                    ) {
-                                        rowData.push(
-                                            orderCount[key].nyb[rowData[0]].buy
-                                        );
-                                        rowData.push(
-                                            orderCount[key].nyb[rowData[0]].sell
-                                        );
-                                    }
                                     arr.push(rowData);
                                 } catch (err) {
                                     console.log(err);
@@ -142,8 +117,8 @@ const processRemoteData = (object, commodityMap) => {
                 } catch (err) {
                     reject(err);
                 }
-            })
-            .catch(err => reject(err));
+            // })
+            // .catch(err => reject(err));
     });
 };
 
@@ -244,4 +219,4 @@ setInterval(() => {
         });
 }, 2000);
 
-countOrder();
+// countOrder();
