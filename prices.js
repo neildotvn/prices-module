@@ -55,7 +55,7 @@ const processRemoteData = (object, commodityMap) => {
         //         orderCount = JSON.parse(orderCount);
 
                 try {
-                    const magicNumbers = [1, 2, 6, 7];
+                    const magicNumbers = [1, 2, 6, 7, 11, 13, 10];
                     const processedData = {};
                     for (key of Object.keys(commodityMap)) {
                         processedData[key] = {};
@@ -68,11 +68,11 @@ const processRemoteData = (object, commodityMap) => {
                                 try {
                                     const rowIndex = ice[i];
                                     const rawData = object.result[rowIndex].vs;
-                                    const rowData = rawData.filter(
-                                        (data, index) =>
-                                            magicNumbers.includes(index)
-                                    );
-                                    rowData.push(rawData[4])
+                                    // const rowData = rawData.filter(
+                                    //     (data, index) =>
+                                    //         magicNumbers.includes(index)
+                                    // );
+                                    const rowData = magicNumbers.map(pos => rawData[pos]);
                                     rowData.push(
                                         !(
                                             rawData[2][0] === "-" ||
@@ -93,11 +93,11 @@ const processRemoteData = (object, commodityMap) => {
                                 try {
                                     const rowIndex = nyb[i];
                                     const rawData = object.result[rowIndex].vs;
-                                    const rowData = rawData.filter(
-                                        (data, index) =>
-                                            magicNumbers.includes(index)
-                                    );
-                                    rowData.push(rawData[4])
+                                    // const rowData = rawData.filter(
+                                    //     (data, index) =>
+                                    //         magicNumbers.includes(index)
+                                    // );
+                                    const rowData = magicNumbers.map(pos => rawData[pos]);
                                     rowData.push(
                                         !(
                                             rawData[2][0] === "-" ||
